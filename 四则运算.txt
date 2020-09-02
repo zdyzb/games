@@ -1,0 +1,90 @@
+
+
+DATA SEGMENT
+     pkey   DB  0dh,0ah,"pleas input N end by ';' :$"
+     over   DB  0AH,0DH,"overflow!",0dh,0ah,'$'
+     result  DB  0dh,0ah,'result is:','$'
+     DAT1  DB  8 DUP(0)
+DATA ENDS
+
+STACK SEGMENT
+    SSTACK DB 100 DUP(0)
+STACK ENDS 
+
+CODE SEGMENT
+     ASSUME CS:CODE,DS:DATA,SS:STACK 
+     
+STATE:  
+    MOV AX,DATA
+    MOV DS,AX
+    LEA SI,DAT1    
+    LEA DX,pkey
+    MOV AH,9
+    INT 21H       
+    
+LLP:MOV AH,1
+    INT 21H     
+    SUB AL,2FH      
+    INC DX          
+    MOV [SI],AL    
+    INC SI
+    CMP AL,0CH      
+    JNZ LLP
+    SUB SI,2
+    CMP DX,02H     
+    JNZ LLLP 
+
+LLP1:MOV CX,1
+     MOV BL,2         
+     JMP LP
+LLLP:
+     MOV DI,SI
+     SUB DI,1          
+     SUB [DI],1
+     MOV AL,10
+     MUL [DI]
+     ADD [SI],AX     
+     SUB AH,AH
+     JMP LLP1
+     
+LP: MOV BH,[SI]      
+    MOV AL,BL
+    INC BL
+    MUL BL          
+    ADD CX,AX        
+    JO  OOF         
+    CMP BH,BL        
+    JNZ LP 
+    MOV AX,CX
+    MOV CX,0AH
+    MOV BX,0                 
+              
+    
+LOP:MOV DX,0
+    DIV CX         ;AX表示的32位数除以10，商放在AX,余数放在DX
+    INC BX
+    ADD DX,30H
+    PUSH DX           ;将余数依次压入栈
+    CMP AX,0
+    JNZ LOP           ;商不为0继续除10
+    LEA DX,result
+    MOV AH,9
+    INT 21H           ;DOS功能调用，输出字符串  
+    
+OUTPUT:
+     POP DX
+     MOV AH,2
+     INT 21H          ;DX中数据依次出栈并显示
+     DEC BX
+     JNZ OUTPUT       ;出栈完成后停止
+     JMP STATE            
+     
+OOF:LEA DX,over
+    MOV AH,09H
+    INT 21H           ;DOS功能调用，溢出显示
+    JMP STATE 
+          
+CODE ENDS
+
+END STATE
+
