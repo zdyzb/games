@@ -1,0 +1,218 @@
+计时工资计算
+DATA SEGMENT
+	NUM DW 102,90,57,89,48,79
+	DUO DB 15
+	SHAO DB 12
+	SALARY DW ?
+	STRING  DB  'THE SALARY SHOULD BE : $'
+DATA ENDS
+CODE SEGMENT
+ASSUME CS:CODE,DS:DATA
+START:	
+	MOV AX,DATA
+	MOV DS,AX
+	MOV SALARY,8000			; multiply ten to ensure all nums are integers.
+	MOV CX,6			; loop six times
+	LEA BX,NUM			; address of num
+ONE:
+	CALL DAY
+	INC BX
+	INC BX				; index add two
+	LOOP ONE
+	JMP THREE
+DAY:
+	MOV AX,60			; the standard nums of items
+	MOV DX,[BX]
+	CMP DX,AX			; compare with 60
+	JC TWO				; if the number is larger than 60
+	SUB DX,AX                       ; get the difference
+	MOV AL,DL
+	IMUL DUO
+	MOV DX,SALARY
+	ADD DX,AX
+	MOV SALARY,DX
+	RET
+TWO:
+	SUB AX,DX			; get the difference
+	IMUL SHAO                              
+	MOV DX,SALARY
+	SUB DX,AX
+	MOV SALARY,DX
+	RET
+THREE:
+	LEA  DX,STRING                  ; output the prompt message
+     	MOV  AH,9
+     	INT  21H
+	MOV AX,SALARY
+	XOR DX,DX
+	MOV BX,10
+	DIV BX
+	CALL SHOW 			; convert to decimal number
+	MOV AH,7
+	INT 21H
+EXIT:
+	MOV AH,4CH	
+	INT 21H
+SHOW:
+	MOV BX,10
+	XOR CX,CX
+Q0:
+	XOR DX,DX
+	DIV BX
+	OR DX,0E30H
+	PUSH DX
+	INC CX
+	CMP AX,0
+	JNZ Q0
+Q1:
+	POP AX
+	INT 10H
+	LOOP Q1
+	RET
+CODE ENDS 
+END START
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+	
+DATA SEGMENT
+	NUM DW 102,90,57,89,48,79
+	DUO DB 15
+	SHAO DB 12
+	SALARY DW ?
+	STRING  DB  'THE SALARY SHOULD BE : $'
+DATA ENDS
+CODE SEGMENT
+ASSUME CS:CODE,DS:DATA
+START:	
+	MOV AX,DATA
+	MOV DS,AX
+	MOV SALARY,8000			; multiply ten to ensure all nums are integers.
+	MOV CX,6			; loop six times
+	LEA BX,NUM			; address of num
+ONE:
+	CALL DAY
+	INC BX
+	INC BX				; index add two
+	LOOP ONE
+	JMP THREE
+DAY:
+	MOV AX,60			; the standard nums of items
+	MOV DX,[BX]
+	CMP DX,AX			; compare with 60
+	JC TWO				; if the number is larger than 60
+	SUB DX,AX                       ; get the difference
+	MOV AL,DL
+	IMUL DUO
+	MOV DX,SALARY
+	ADD DX,AX
+	MOV SALARY,DX
+	RET
+TWO:
+	SUB AX,DX			; get the difference
+	IMUL SHAO                              
+	MOV DX,SALARY
+	SUB DX,AX
+	MOV SALARY,DX
+	RET
+THREE:
+	LEA  DX,STRING                  ; output the prompt message
+     	MOV  AH,9
+     	INT  21H
+	MOV AX,SALARY
+	XOR DX,DX
+	MOV BX,10
+	DIV BX
+	CALL SHOW 			; convert to decimal number
+	MOV AH,7
+	INT 21H
+EXIT:
+	MOV AH,4CH	
+	INT 21H
+SHOW:
+	MOV BX,10
+	XOR CX,CX
+Q0:
+	XOR DX,DX
+	DIV BX
+	OR DX,0E30H
+	PUSH DX
+	INC CX
+	CMP AX,0
+	JNZ Q0
+Q1:
+	POP AX
+	INT 10H
+	LOOP Q1
+	RET
+CODE ENDS 
+END START
