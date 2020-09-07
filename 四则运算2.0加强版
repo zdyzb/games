@@ -1,6 +1,6 @@
 DATA SEGMENT
 divisors DW 10000, 1000, 100, 10, 1
-results DB 0,0,0,0,0,"$" ;存放五位数ASCII码
+results DB 0,0,0,0,0,"$" 
 data ends
 
 STACK SEGMENT
