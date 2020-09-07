@@ -1,0 +1,113 @@
+CCSLR PROC
+CCLT: CMP    DL,CH
+      JB     LESS
+      SUB    DL,CH
+      MOV    AL,15
+      MUL    DL
+      ADD    BX,AX
+      JMP    OV
+    LESS: MOV    CL,CH
+       SUB   CL,DL
+       MOV   AL,12
+       MUL   CL
+       SUB   BX,AX
+    OV:    RET
+CCSLR   ENDP
+SHOWNUM   PROC
+     MOV    DL,BYTE PTR[SI]
+     ADD    DL,30H
+     MOV    AH,02H
+     INT    21H
+     RET
+    SHOWNUM ENDP
+DATA  SEGMENT
+MON    DB 102
+TUE    DB  90
+WEN    DB  67
+THE    DB  89
+FRI    DB  98
+SAT    DB  125
+STRING  DB 0AH,0DH,"THE salary is $"
+YUAN DB "Yuan.$"
+SLR     DB  4 DUP(?)
+DATA    ENDS
+CODE  SEGMENT
+ASSUME   CS:CODE,DS:DATA
+CCSLR   PROC
+CCLT:  CMP  DL,CH
+       JB   LESS
+       SUB   DL,CH
+        MOV  AL,15
+        MUL  DL
+        ADD BX,AX
+        JMP   OV
+    LESS : MOV CL,CH
+        SUB  CL,DL
+        MOV   AL,12
+        MUL  CL
+        SUB   BX,AX
+    OV:     RET
+CCSLR  ENDP
+SHOWNUM PROC
+MOV DL,BYTE PTR[SI]
+     ADD DL,30H
+     MOV  AH,02H
+      INT 21H
+      RET
+    SHOWNUM ENDP
+    START:MOV  AX,DATA
+          MOV  DS,AX
+          MOV  CH,80
+          MOV  BX,6000
+    MOND:MOV   DL,MON
+        CALL CCSLR
+    TUES:MOV DL,TUE
+       CALL CCSLR
+    WENS:MOV DL,WEN
+        CALL CCSLR
+    THER :MOV DL,THE
+        CALL CCSLR
+    FRID:MOV DL,FRI
+      CALL CCSLR
+    SATE:MOV DL,SAT
+      CALL CCSLR
+    THENU : LEA SI,SLR
+    CCLTOR:MOV AX,BX
+    MOV DL,100
+    DIV DL
+    MOV DH,AH
+    MOV BH,10
+    MOV AH,00H
+    DIV BH
+    MOV BYTE PTR [SI],AL
+    INC SI
+    MOV BYTE PTR [SI],AH
+    INC SI
+    XOR AX,AX
+    MOV AL,DH
+    DIV BH
+    MOV BYTE PTR [SI],AL
+    INC SI
+    MOV BYTE PTR [SI],AH
+
+    PROMP: LEA  DX,STRING
+    MOV AH,09H
+    INT 21H
+    OUTPRT:LEA SI,SLR
+CALL SHOWNUM
+INC SI
+CALLSHOWNUM
+INC SI
+CALL SHOWNUM
+MOV DL,'.'
+MOV AH,02H
+INT 21H
+INC SI
+CALL SHOWNUM
+Y:LEA DX,YUAN
+MOV AH,09H
+INT 21H
+OVER: MOV AX,4C00H
+INT   21H
+CODE ENDS
+END START
